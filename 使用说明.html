@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI教学工作台 · 使用说明</title>
+<style>
+  :root{--ink:#1a2433;--ink2:#475569;--ink3:#64748b;--line:#e2e8f0;--bg:#f7f9fc;--blue:#2563eb;--blue-bg:#eff6ff;--teal:#0d9488;--teal-bg:#f0fdfa;--orange:#ea580c;--orange-bg:#fff7ed;--green:#16a34a;--green-bg:#f0fdf4}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);line-height:1.8;font-size:15px}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px 60px}
+  .hero{background:linear-gradient(135deg,#1e3a8a 0%,#0d9488 100%);color:#fff;border-radius:18px;padding:36px 32px;margin:28px 0;box-shadow:0 16px 40px rgba(30,58,138,.25)}
+  .hero h1{font-size:28px;margin-bottom:8px}
+  .hero .sub{font-size:15px;opacity:.92}
+  h2.sec{font-size:21px;margin:38px 0 8px;padding-bottom:9px;border-bottom:2px solid var(--blue);display:flex;align-items:center;gap:9px}
+  h2.sec .n{background:var(--blue);color:#fff;width:27px;height:27px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+  h3{font-size:17px;margin:20px 0 8px}
+  p{margin:7px 0}
+  .lead{color:var(--ink2)}
+  .cap{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0;border-left:5px solid var(--teal)}
+  .cap .ct{font-weight:700;font-size:15px;margin-bottom:6px;color:var(--teal)}
+  .say{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:9px;padding:12px 14px;margin:10px 0;font-size:13.5px}
+  .say .sl{font-size:11px;font-weight:700;color:var(--blue);display:block;margin-bottom:4px}
+  .say code{background:#fff;padding:1px 6px;border-radius:4px;font-size:12px;color:var(--blue);font-family:"SF Mono",Consolas,monospace}
+  .out{background:var(--green-bg);border:1px solid #bbf7d0;border-radius:9px;padding:10px 14px;margin:8px 0;font-size:13px;color:#166534}
+  .out .ol{font-size:11px;font-weight:700;color:var(--green);display:block;margin-bottom:3px}
+  .tree{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;font-family:"SF Mono",Consolas,monospace;font-size:12.5px;line-height:2;color:var(--ink2);overflow-x:auto}
+  .tree b{color:var(--blue)} .tree i{color:var(--teal);font-style:normal}
+  table{width:100%;border-collapse:collapse;margin:12px 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);font-size:13px}
+  th{background:var(--ink);color:#fff;padding:9px 11px;text-align:left;font-size:12.5px}
+  td{padding:9px 11px;border-bottom:1px solid var(--line);vertical-align:top}
+  .note{background:var(--orange-bg);border:1px solid #fed7aa;border-radius:9px;padding:11px 14px;margin:12px 0;font-size:13px;color:#9a3412}
+  .note b{color:#7c2d12}
+  .road{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .road .rc{border-radius:11px;padding:14px;color:#fff}
+  .road .rc b{font-size:14px} .road .rc p{font-size:12.5px;opacity:.92;margin-top:4px}
+  .r-p1{background:linear-gradient(135deg,#ea580c,#c2410c)} .r-p2{background:linear-gradient(135deg,#0d9488,#0f766e)}
+  .foot{text-align:center;color:var(--ink3);font-size:12px;margin-top:34px;padding-top:18px;border-top:1px solid var(--line)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>AI 教学工作台 · 使用说明</h1>
+  <div class="sub">你不需要跑任何脚本——所有能力都在对话里调用。你只需用大白话说需求，AI 自动调底库、生成器、话术库帮你出结果。</div>
+</div>
+
+<!-- 怎么用 -->
+<h2 class="sec"><span class="n">1</span>四大核心能力 · 对话式用法</h2>
+<p class="lead">下面是你日常会用的四个动作。每条都给了「你怎么说 → AI 怎么做 → 你得到什么」。直接照着在对话里说就行。</p>
+
+<div class="cap">
+  <div class="ct">① 生成学生专属教学大纲</div>
+  <p>把学生的年级、层次、学期、家长期望、漏洞告诉 AI，它调大纲底库 + 生成器，输出带裁剪说明的 xlsx。</p>
+  <div class="say"><span class="sl">💬 你这样说</span>帮<code>张同学</code>生成专属大纲，<code>初二·精进·寒假</code>，家长期望<code>查漏优先</code>，漏洞是<code>含参不等式组、一次函数综合、分式方程</code>。</div>
+  <div class="out"><span class="ol">✅ 你得到</span>一份 xlsx：漏洞讲次自动前置、每讲有裁剪说明、重点★标注、未覆盖漏洞给出跨年级补课建议（如「含参不等式组」→查到初一好学/精进寒假里有）。可直接编辑打印。</div>
+  <div class="note"><b>能调的全部底库：</b>FY26寒春（初一~初三 × 好学/精进，寒+春）、FY27暑秋（含志高+壮志拔高），共 564 讲结构化数据。</div>
+</div>
+
+<div class="cap">
+  <div class="ct">② 生成家长沟通话术</div>
+  <p>三个场景：课后反馈、家长提问应答、阶段规划。AI 从学生档案调数据填充变量，话术风格对齐你的[玫瑰]范例。</p>
+  <div class="say"><span class="sl">💬 课后反馈这样说</span>帮<code>张同学</code>写课后反馈，今天讲了<code>一次函数综合</code>，孩子反应快但<code>联立计算易错、分类讨论不全</code>，后续<code>安排一讲强化含参分类讨论</code>。</div>
+  <div class="say"><span class="sl">💬 家长提问应答这样用</span>把家长发来的话直接转给 AI，比如「<code>孩子上了这么久怎么没提分</code>」，并说明是哪个学生。</div>
+  <div class="out"><span class="ol">✅ 你得到</span>对齐你风格的话术，家长提问应答会自动调出该生成绩曲线作依据，给出 2-3 版回复思路 + 可复制话术。</div>
+  <p style="margin-top:8px"><b>覆盖的家长提问类型：</b>为什么没提分 / 能不能加课 / 孩子是不是不适合 / 作业做不完 / 下次能考多少分。新类型随时告诉我补充入库。</p>
+</div>
+
+<div class="cap">
+  <div class="ct">③ 学情诊断（试卷→漏洞+提分方向）</div>
+  <p>把学生试卷失分情况告诉 AI，它对照大纲知识点体系出结构化诊断报告，并自动建议切入讲次。</p>
+  <div class="say"><span class="sl">💬 你这样说</span><code>张同学</code>初二精进，这次月考<code>102分</code>，失分在<code>含参不等式组-6、一次函数综合-8、反比例k几何-4</code>，帮我分析漏洞和提分方向。</div>
+  <div class="out"><span class="ol">✅ 你得到</span>诊断报告：漏洞清单（致命/薄弱/熟练）+ 失分模块统计 + 提分方向 + 建议切入大纲讲次，可直接写入学生档案。</div>
+</div>
+
+<div class="cap">
+  <div class="ct">④ 学生档案（记住每个学生各阶段）</div>
+  <p>把课堂表现、成绩、家长沟通要点发给 AI，它记入该学生档案（多 sheet：总览/诊断/成绩/课堂/沟通/阶段目标），随用随调。</p>
+  <div class="say"><span class="sl">💬 你这样说</span>记一下：<code>张同学</code>今天第11讲反比例函数二，<code>亮点是k几何意义理解到位，问题是与一次函数综合时交点算错</code>，反馈已发。</div>
+  <div class="out"><span class="ol">✅ 你得到</span>更新后的学生档案，下次说「调张同学档案」即可一眼看清他各阶段情况，不用翻聊天记录。</div>
+</div>
+
+<!-- 文件清单 -->
+<h2 class="sec"><span class="n">2</span>工作台文件清单</h2>
+<p class="lead">所有文件都在 <code>AI教学工作台/</code> 目录下，结构如下：</p>
+<div class="tree">
+AI教学工作台/
+├─ <b>AI教学工作台蓝图.html</b>           <i>// 整体设计方案（9模块/架构/路线）</i>
+├─ <b>使用说明.html</b>                   <i>// 本文件</i>
+├─ 大纲底库/
+│   ├─ <b>syllabus_library.json</b>      <i>// 564讲结构化底库（生成器燃料）</i>
+│   └─ <b>parse_syllabus.py</b>          <i>// 底库解析脚本（底库有更新时重跑）</i>
+├─ 专属大纲生成器/
+│   ├─ <b>generate_syllabus.py</b>       <i>// 生成器（命令行可跑，也供AI调用）</i>
+│   └─ output/<i>张同学_初二精进_寒假专属大纲.xlsx</i>  <span style="color:#dc2626">// 示例产出</span>
+├─ 话术库/
+│   ├─ <b>话术手册.html</b>               <i>// 话术手册（可查阅）</i>
+│   └─ <b>话术模板库.json</b>            <i>// 结构化话术库（AI调用）</i>
+└─ 学生档案/
+    ├─ <b>学生档案模板.xlsx</b>           <i>// 6-sheet档案模板（含示例）</i>
+    ├─ <b>学情诊断报告模板.xlsx</b>       <i>// 诊断报告表单模板</i>
+    └─ generate_templates.py              <i>// 模板生成脚本</i>
+</div>
+<table>
+  <thead><tr><th>文件</th><th>是什么</th><th>你怎么用</th></tr></thead>
+  <tbody>
+    <tr><td>syllabus_library.json</td><td>机构大纲结构化底库</td><td>不用动，AI 自动调</td></tr>
+    <tr><td>generate_syllabus.py</td><td>专属大纲生成器</td><td>对话里说需求即可，无需手动跑</td></tr>
+    <tr><td>话术模板库.json + 话术手册.html</td><td>家长话术库</td><td>对话里说场景，AI 套用；手册随时查阅</td></tr>
+    <tr><td>学生档案模板.xlsx</td><td>学生档案（6 sheet）</td><td>复制建每个学生档案，或让 AI 帮记</td></tr>
+    <tr><td>学情诊断报告模板.xlsx</td><td>诊断报告表单</td><td>让 AI 出诊断后填入或直接生成</td></tr>
+    <tr><td>张同学_...专属大纲.xlsx</td><td>生成器示例产出</td><td>参考效果，可删</td></tr>
+  </tbody>
+</table>
+
+<!-- 演进 -->
+<h2 class="sec"><span class="n">3</span>后续演进（二期/长期）</h2>
+<p class="lead">MVP 已跑通「记得住学生 + 出得了大纲 + 写得了话术 + 看得准漏洞」。后续可加：</p>
+<div class="road">
+  <div class="rc r-p1"><b>二期（备课+提醒）</b><p>课前备课助手（教案/出入门测/练习/作业四件套）、课表智能提醒（提前1天+提前10分钟到岗）、课堂表现自动归档、话术模板自定义保存。</p></div>
+  <div class="rc r-p2"><b>长期（数据沉淀）</b><p>成绩进步看板（曲线+雷达）、题库与错题本（按知识点/难度归集）、续班满意度预警、跨学生薄弱统计反哺备课。</p></div>
+</div>
+<p style="margin-top:14px">需要哪个二期能力，直接说「帮我加备课助手」或「配置上课提醒」，我接着搭。</p>
+
+<!-- 说明 -->
+<h2 class="sec"><span class="n">4</span>几点说明</h2>
+<div class="note"><b>关于资料库上传：</b>当前环境把文件上传到 WorkBuddy 资料库受限（返回 path not allowed），所以底库和模板暂存在工作台目录。如需<b>跨设备访问</b>，你可在 WorkBuddy 界面手动上传这几个文件到资料库，或后续我协助处理权限。</div>
+<div class="note"><b>关于钉钉群：</b>按你的确认，钉钉群消息用「粘贴兜底」——你把群里家长消息或考试通知复制给我即可，无需 API。</div>
+<div class="note"><b>关于试卷脱敏：</b>按你的确认，试卷走 AI 识别时我会脱敏处理（隐去姓名/学校/考号等），只保留题目与失分用于分析。</div>
+<div class="note"><b>关于大纲底库更新：</b>机构下发新大纲时，把新 xlsx 给我，我重跑 parse_syllabus.py 更新底库，生成器自动用新版。</div>
+
+<div class="foot">AI 教学工作台 v1.0（MVP） · 已跑通核心闭环 · 你随时可在对话里调用</div>
+
+</div>
+</body>
+</html>

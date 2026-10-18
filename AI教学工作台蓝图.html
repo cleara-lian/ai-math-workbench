@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学私教 AI 工作台 · 蓝图</title>
+<style>
+  :root{
+    --ink:#1a2433; --ink2:#475569; --ink3:#64748b;
+    --line:#e2e8f0; --bg:#f7f9fc; --bg2:#eef3f9;
+    --blue:#2563eb; --blue2:#3b82f6; --blue-bg:#eff6ff;
+    --teal:#0d9488; --teal-bg:#f0fdfa;
+    --orange:#ea580c; --orange-bg:#fff7ed;
+    --purple:#7c3aed; --purple-bg:#f5f3ff;
+    --green:#16a34a; --green-bg:#f0fdf4;
+    --pink:#db2777; --pink-bg:#fdf2f8;
+    --amber:#d97706; --amber-bg:#fffbeb;
+    --p0:#dc2626; --p1:#d97706; --p2:#0891b2;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);line-height:1.75;font-size:15px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px 80px}
+  /* 封面 */
+  .hero{background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 55%,#0d9488 100%);color:#fff;border-radius:20px;padding:48px 40px;margin:32px 0;box-shadow:0 20px 50px rgba(37,99,235,.25);position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-60px;top:-60px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.08)}
+  .hero::before{content:"";position:absolute;right:60px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.18);padding:5px 14px;border-radius:20px;font-size:13px;margin-bottom:18px;backdrop-filter:blur(4px)}
+  .hero h1{font-size:34px;margin-bottom:10px;letter-spacing:.5px}
+  .hero .sub{font-size:17px;opacity:.92;max-width:680px}
+  .hero .meta{display:flex;gap:28px;margin-top:26px;flex-wrap:wrap}
+  .hero .meta div{font-size:13px;opacity:.85}
+  .hero .meta b{display:block;font-size:20px;font-weight:700;opacity:1;margin-bottom:2px}
+  /* 目录 */
+  .toc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 24px;margin:28px 0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px}
+  .toc a{color:var(--blue);text-decoration:none;padding:3px 8px;border-radius:6px}
+  .toc a:hover{background:var(--blue-bg)}
+  .toc .lab{color:var(--ink3);font-weight:600;margin-right:4px}
+  /* 章节 */
+  h2.sec{font-size:23px;margin:52px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--blue);display:flex;align-items:center;gap:10px}
+  h2.sec .n{background:var(--blue);color:#fff;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700}
+  h3.sub{font-size:18px;margin:28px 0 10px;color:var(--ink)}
+  h4{font-size:15px;margin:18px 0 6px;color:var(--blue)}
+  p{margin:8px 0}
+  .lead{color:var(--ink2);font-size:15px}
+  .quote{border-left:4px solid var(--blue);background:var(--blue-bg);padding:14px 18px;margin:16px 0;border-radius:0 10px 10px 0;color:var(--ink2)}
+  .quote b{color:var(--ink)}
+  ul,ol{margin:8px 0 8px 22px}
+  li{margin:4px 0}
+  code{background:var(--bg2);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--blue);font-family:"SF Mono",Consolas,monospace}
+  .pill{display:inline-block;padding:2px 10px;border-radius:12px;font-size:12px;font-weight:600}
+  .p-P0{background:#fee2e2;color:#b91c1c}
+  .p-P1{background:#fef3c7;color:#92400e}
+  .p-P2{background:#cffafe;color:#0e7490}
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;margin:14px 0;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.04);font-size:13.5px}
+  th{background:var(--ink);color:#fff;padding:11px 12px;text-align:left;font-weight:600;font-size:13px}
+  td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:hover td{background:var(--bg2)}
+  td:first-child{font-weight:600}
+  .mod-name{display:flex;align-items:center;gap:8px}
+  .ic{width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  /* 架构图 */
+  .arch{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin:20px 0}
+  .arch-core{text-align:center;background:linear-gradient(135deg,#2563eb,#0d9488);color:#fff;border-radius:12px;padding:16px;margin-bottom:20px;font-weight:700;font-size:16px;box-shadow:0 6px 18px rgba(37,99,235,.3)}
+  .arch-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+  .arch-col{background:var(--bg2);border-radius:10px;padding:12px}
+  .arch-col .t{font-weight:700;font-size:13px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .arch-col .item{background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px 10px;margin:5px 0;font-size:12.5px;display:flex;align-items:center;gap:6px}
+  .arch-col .item .d{margin-left:auto;font-size:11px;color:var(--ink3)}
+  /* 模块卡 */
+  .mod{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;margin:16px 0;position:relative;border-left:5px solid var(--blue)}
+  .mod.m-teal{border-left-color:var(--teal)} .mod.m-orange{border-left-color:var(--orange)} .mod.m-purple{border-left-color:var(--purple)}
+  .mod.m-green{border-left-color:var(--green)} .mod.m-pink{border-left-color:var(--pink)} .mod.m-amber{border-left-color:var(--amber)}
+  .mod-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+  .mod-head h3{margin:0;font-size:18px}
+  .mod-head .ic-lg{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff;flex-shrink:0}
+  .flow{display:flex;align-items:stretch;gap:0;margin:14px 0;flex-wrap:wrap}
+  .flow-step{flex:1;min-width:140px;background:var(--bg2);border-radius:10px;padding:10px 12px;font-size:12.5px;position:relative}
+  .flow-step .st{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:3px}
+  .flow-arrow{display:flex;align-items:center;color:var(--ink3);padding:0 4px;font-size:18px}
+  .io-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0}
+  .io-box{border-radius:9px;padding:11px 13px;font-size:12.5px}
+  .io-in{background:var(--blue-bg)} .io-proc{background:var(--amber-bg)} .io-out{background:var(--green-bg)}
+  .io-box .lab{font-weight:700;font-size:11px;margin-bottom:5px;display:block}
+  .io-in .lab{color:var(--blue)} .io-proc .lab{color:var(--amber)} .io-out .lab{color:var(--green)}
+  .io-box ul{margin:0;padding-left:16px}
+  .io-box li{margin:2px 0;font-size:12px}
+  /* 信息架构树 */
+  .tree{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;font-family:"SF Mono",Consolas,monospace;font-size:13px;line-height:2.1;color:var(--ink2);overflow-x:auto}
+  .tree b{color:var(--blue)}
+  .tree i{color:var(--teal);font-style:normal}
+  .tree .s{color:var(--ink3)}
+  /* 看板原型 */
+  .proto{background:#1e293b;border-radius:14px;padding:0;margin:18px 0;overflow:hidden;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+  .proto-bar{background:#0f172a;padding:9px 14px;display:flex;align-items:center;gap:8px}
+  .proto-bar .dot{width:11px;height:11px;border-radius:50%}
+  .proto-bar .url{color:#94a3b8;font-size:12px;margin-left:10px}
+  .proto-body{background:#f1f5f9;padding:16px;min-height:380px}
+  .proto-side{display:flex;gap:14px}
+  .proto-nav{width:160px;background:#fff;border-radius:10px;padding:12px 8px;font-size:12.5px;flex-shrink:0}
+  .proto-nav .nt{font-weight:700;font-size:12px;color:var(--ink3);padding:6px 8px 4px}
+  .proto-nav .ni{padding:7px 9px;border-radius:7px;margin:2px 0;display:flex;align-items:center;gap:7px;cursor:pointer}
+  .proto-nav .ni.act{background:var(--blue-bg);color:var(--blue);font-weight:600}
+  .proto-main{flex:1;display:flex;flex-direction:column;gap:12px}
+  .proto-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .pc{background:#fff;border-radius:9px;padding:11px 12px}
+  .pc .l{font-size:11px;color:var(--ink3)} .pc .v{font-size:20px;font-weight:700;margin:2px 0}
+  .pc .v.up{color:var(--green)} .pc .v.warn{color:var(--orange)}
+  .proto-panel{background:#fff;border-radius:9px;padding:13px}
+  .proto-panel .pt{font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+  .stu-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .stu-row:last-child{border:0}
+  .avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:600;flex-shrink:0}
+  .stu-row .nm{font-weight:600;font-size:13px} .stu-row .info{font-size:11px;color:var(--ink3)}
+  .bar-track{height:6px;background:var(--bg2);border-radius:3px;margin-top:3px}
+  .bar-fill{height:100%;border-radius:3px}
+  .proto-chat{background:#fff;border-radius:9px;padding:13px;font-size:12px}
+  .proto-chat .msg{background:var(--green-bg);border:1px solid #bbf7d0;border-radius:9px;padding:8px 10px;margin-bottom:7px;font-size:11.5px;line-height:1.6}
+  /* 自动化 */
+  .auto-table th:nth-child(1){width:14%} .auto-table th:nth-child(2){width:16%}
+  .auto-table th:nth-child(3){width:14%} .auto-table th:nth-child(4){width:36%} .auto-table th:nth-child(5){width:20%}
+  /* 路线图 */
+  .road{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0}
+  .road-card{border-radius:14px;padding:18px;color:#fff}
+  .road-card .rh{font-size:15px;font-weight:700;margin-bottom:4px}
+  .road-card .rt{font-size:12px;opacity:.9;margin-bottom:12px}
+  .road-card ul{margin:0;padding-left:18px}
+  .road-card li{font-size:12.5px;margin:5px 0;opacity:.95}
+  .road-mvp{background:linear-gradient(135deg,#2563eb,#1e40af)}
+  .road-p1{background:linear-gradient(135deg,#ea580c,#c2410c)}
+  .road-p2{background:linear-gradient(135deg,#0d9488,#0f766e)}
+  .check{list-style:none;margin:8px 0 8px 0;padding:0}
+  .check li{padding-left:24px;position:relative;margin:6px 0}
+  .check li::before{content:"☐";position:absolute;left:0;color:var(--blue);font-size:16px}
+  /* 适配说明 */
+  .layer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}
+  .layer{border-radius:10px;padding:13px;text-align:center;color:#fff}
+  .layer .ln{font-size:15px;font-weight:700} .layer .ls{font-size:11px;opacity:.92;margin-top:2px}
+  .layer .ld{font-size:11px;opacity:.85;margin-top:4px}
+  .l-hao{background:linear-gradient(135deg,#16a34a,#15803d)}
+  .l-jin{background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+  .l-zhi{background:linear-gradient(135deg,#7c3aed,#6d28d9)}
+  .l-zhuang{background:linear-gradient(135deg,#db2777,#be185d)}
+  .note{background:var(--amber-bg);border:1px solid #fde68a;border-radius:10px;padding:13px 16px;margin:14px 0;font-size:13px;color:#92400e}
+  .note b{color:#78350f}
+  .kbd{background:#fff;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 7px;font-size:12px;font-family:monospace;color:var(--ink2)}
+  hr.sp{border:0;border-top:1px dashed var(--line);margin:30px 0}
+  .foot{text-align:center;color:var(--ink3);font-size:12.5px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+  @media(max-width:720px){.arch-row,.io-grid,.road,.proto-cards{grid-template-columns:1fr}.proto-nav{display:none}.hero h1{font-size:26px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- 封面 -->
+<div class="hero">
+  <span class="tag">一对一初中数学教培 · 专属工作台</span>
+  <h1>数学私教 AI 工作台</h1>
+  <div class="sub">以「每个学生」为核心，把首课诊断、专属大纲、课前备课、行课反馈、家长沟通串成一个数据闭环——越用越懂每个孩子。</div>
+  <div class="meta">
+    <div><b>9</b>个功能模块</div>
+    <div><b>3</b>大工作流闭环</div>
+    <div><b>4</b>套机构大纲底库</div>
+    <div><b>2 周</b>MVP 可跑通</div>
+  </div>
+</div>
+
+<!-- 目录 -->
+<div class="toc">
+  <span class="lab">目录</span>
+  <a href="#s1">现状与痛点</a><a href="#s2">总览架构</a><a href="#s3">核心模块</a><a href="#s4">信息架构</a>
+  <a href="#s5">首课全流程示例</a><a href="#s6">自动化规则</a><a href="#s7">看板原型</a><a href="#s8">大纲分层适配</a><a href="#s9">落地路线</a><a href="#s10">选型与说明</a>
+</div>
+
+<!-- 1. 现状与痛点 -->
+<h2 class="sec" id="s1"><span class="n">1</span>你的现状与痛点</h2>
+<p class="lead">从你描述的工作流里，我提炼出三个核心角色场景与四类高频痛点——工作台的设计全部围绕它们展开。</p>
+
+<table>
+  <thead><tr><th>工作模块</th><th>你现在的动作</th><th>卡的点（痛点）</th><th>工作台如何解</th></tr></thead>
+  <tbody>
+    <tr><td>首课开课</td><td>查卷子→定大纲→行课→反馈家长</td><td>凭经验判断漏洞，大纲靠手改，反馈措辞耗时</td><td>试卷一上传即出漏洞清单+提分方向+专属大纲草稿</td></tr>
+    <tr><td>课前准备</td><td>钉钉看卷子、改大纲、备教案出入测作业</td><td>材料分散、每次重造；学生多了记不清谁到哪了</td><td>选课次即生成教案/出入测/作业；档案自动续接</td></tr>
+    <tr><td>日常行课</td><td>按大纲上课、课后群里发反馈</td><td>反馈话术每条都要现写；家长突然发难不知怎么回</td><td>输入课堂表现→一键出反馈话术；家长提问智能应答</td></tr>
+  </tbody>
+</table>
+
+<div class="quote">四类高频痛点：<b>① 学生档案散落记不住</b>（成绩、漏洞、阶段目标各阶段对不上）<b>② 大纲修改纯手工</b>（机构大纲要在年段×层次×学情三维上裁剪）<b>③ 家长沟通耗心力</b>（反馈话术+应对提问）<b>④ 备课材料重复造</b>（教案/出入测/作业每次从零）。</div>
+
+<!-- 2. 总览架构 -->
+<h2 class="sec" id="s2"><span class="n">2</span>工作台总览架构</h2>
+<p class="lead">一句话定位：<b>以「学生档案」为中枢，左手抓诊断与大纲，右手抓备课与沟通，自动化跑提醒与沉淀。</b></p>
+
+<div class="arch">
+  <div class="arch-core">🎯 学生档案中心　·　每个学生一份终身档案，聚合诊断/大纲/反馈/成绩</div>
+
+  <div class="arch-row">
+    <div class="arch-col">
+      <div class="t">📥 输入侧 · 感知</div>
+      <div class="item">📷 试卷拍照/上传 <span class="d">手动</span></div>
+      <div class="item">💬 钉钉群消息 <span class="d">导出/粘贴</span></div>
+      <div class="item">🗓️ 课表排课 <span class="d">手动/导入</span></div>
+      <div class="item">📝 课堂表现速记 <span class="d">手动</span></div>
+    </div>
+    <div class="arch-col">
+      <div class="t">🧠 AI 引擎 · 处理</div>
+      <div class="item">🔬 学情诊断 <span class="d">漏洞分析</span></div>
+      <div class="item">📐 大纲生成器 <span class="d">底库×学情</span></div>
+      <div class="item">✍️ 话术生成 <span class="d">反馈+应答</span></div>
+      <div class="item">📚 备课生成 <span class="d">教案/测/作业</span></div>
+    </div>
+    <div class="arch-col">
+      <div class="t">📤 输出侧 · 行动</div>
+      <div class="item">📄 专属大纲(可编辑) <span class="d">导出/打印</span></div>
+      <div class="item">📨 家长反馈话术 <span class="d">复制即发</span></div>
+      <div class="item">📖 备课材料包 <span class="d">打印上课</span></div>
+      <div class="item">⏰ 上课提醒 <span class="d">日历推送</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:12.5px;color:var(--ink3);margin-top:8px">所有输入都沉淀回学生档案 → 形成越用越准的「学生画像」闭环</div>
+</div>
+
+<!-- 3. 核心模块 -->
+<h2 class="sec" id="s3"><span class="n">3</span>核心模块清单（9 个）</h2>
+<p class="lead">优先级：<span class="pill p-P0">P0 必需</span> MVP 落地 ／ <span class="pill p-P1">P1 重要</span> 二期 ／ <span class="pill p-P2">P2 增强</span> 长期演进。</p>
+
+<table>
+  <thead><tr><th>模块</th><th>解决什么</th><th>优先级</th><th>依赖</th><th>集成方式</th></tr></thead>
+  <tbody>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--blue)">🗂️</span>学生档案中心</div></td><td>每个学生聚合档案，记住各阶段情况，告别「记不清」</td><td><span class="pill p-P0">P0</span></td><td>—</td><td>原生表单/知识库</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--teal)">🔬</span>学情诊断引擎</div></td><td>上传试卷→AI分析知识漏洞、失分模块、提分方向</td><td><span class="pill p-P0">P0</span></td><td>档案中心</td><td>OCR+AI+大纲底库</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--purple)">📐</span>专属大纲生成器</div></td><td>年段×层次×学情三维裁剪机构大纲→专属教学大纲</td><td><span class="pill p-P0">P0</span></td><td>诊断引擎+大纲底库</td><td>AI+可编辑表格</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--orange)">✍️</span>家长沟通话术库</div></td><td>课后反馈话术+家长提问智能应答+阶段规划沟通</td><td><span class="pill p-P0">P0</span></td><td>档案中心</td><td>AI话术模板</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--green)">📚</span>课前备课助手</div></td><td>选课次→生成教案/出入门测/课堂练习/课后作业</td><td><span class="pill p-P1">P1</span></td><td>专属大纲</td><td>AI+题库</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--amber)">⏰</span>课表与智能提醒</div></td><td>课表日历+提前1天上课提醒+提前10分钟到岗提醒</td><td><span class="pill p-P1">P1</span></td><td>课表数据</td><td>日历+定时推送</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:#0891b2">📈</span>成绩进步看板</div></td><td>历次分数曲线+知识模块掌握度雷达+提分进度</td><td><span class="pill p-P2">P2</span></td><td>档案中心</td><td>图表组件</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:var(--pink)">🗒️</span>题库与错题本</div></td><td>按知识点+难度归集题目，学生错题自动归档复用</td><td><span class="pill p-P2">P2</span></td><td>诊断引擎</td><td>题库+标签</td></tr>
+    <tr><td><div class="mod-name"><span class="ic" style="background:#dc2626">🔔</span>续班满意度预警</div></td><td>学习停滞/沟通信号异常时预警，辅助续班决策</td><td><span class="pill p-P2">P2</span></td><td>成绩看板</td><td>规则引擎</td></tr>
+  </tbody>
+</table>
+
+<!-- 模块详解 P0 -->
+<h3 class="sub">P0 模块详解</h3>
+
+<div class="mod m-teal">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--teal)">🗂️</div>
+    <h3>① 学生档案中心</h3><span class="pill p-P0">P0</span>
+  </div>
+  <p>每个学生一份<b>终身档案</b>，所有模块的数据都回流到这里。这是工作台的「心脏」——你点开任何一个学生，就能一眼看清他从首课到现在的完整轨迹。</p>
+  <div class="io-grid">
+    <div class="io-box io-in"><span class="lab">📥 档案包含</span><ul><li>基本信息（姓名/年级/学校/班型）</li><li>家长期望与目标（查漏 or 同步）</li><li>历次诊断报告</li><li>专属教学大纲（当前版）</li><li>阶段目标与达成情况</li><li>历次成绩 + 课堂表现</li><li>家长沟通记录（按时间）</li><li>标签：薄弱模块/学习习惯</li></ul></div>
+    <div class="io-box io-proc"><span class="lab">🧠 AI 做什么</span><ul><li>自动抽取诊断关键字段入档</li><li>对话/试卷解析后自动归档</li><li>跨阶段关联：把每次诊断与上次对比</li><li>生成「学生画像」摘要</li></ul></div>
+    <div class="io-box io-out"><span class="lab">📤 你得到什么</span><ul><li>一键调出任一学生完整画像</li><li>「这个学生上次卡在哪」秒回</li><li>新生接手时历史不丢</li><li>续班沟通有据可依</li></ul></div>
+  </div>
+  <div class="note"><b>关键设计：</b>档案按「学期-阶段」折叠存储，首课诊断、每节课反馈、每次考试都成为时间轴上的一个节点，点开可追溯。学生多了也不会混。</div>
+</div>
+
+<div class="mod m-purple">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--purple)">🔬</div>
+    <h3>② 学情诊断引擎</h3><span class="pill p-P0">P0</span>
+  </div>
+  <p>把你从「肉眼逐题看卷子」中解放出来。<b>上传一张试卷（拍照或文件）+ 失分情况</b>，AI 对照机构大纲的知识点体系，给出结构化的漏洞清单和提分建议。</p>
+  <div class="flow">
+    <div class="flow-step"><div class="st">STEP 1 · 输入</div>上传试卷图片/PDF + 每题得分（或总分+扣分点速记）</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="st">STEP 2 · 识别</div>OCR识别题目 → 映射到大纲知识点（如「含参不等式组」「相似三角形」）</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="st">STEP 3 · 分析</div>失分模块统计 + 漏洞等级（致命/薄弱/熟练）+ 学习习惯判断</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="st">STEP 4 · 建议</div>提分方向（先补哪个后补哪个）+ 对应大纲讲次 + 优先级排序</div>
+  </div>
+  <div class="io-grid">
+    <div class="io-box io-in"><span class="lab">📥 输入</span><ul><li>试卷图片/PDF</li><li>每题得分或失分速记</li><li>学生当前层次（好学/精进/志高）</li><li>可选：钉钉群里的考试通知</li></ul></div>
+    <div class="io-box io-proc"><span class="lab">🧠 AI 处理</span><ul><li>OCR + 知识点识别</li><li>对照大纲「小标题」做映射</li><li>失分聚类到知识模块</li><li>习惯推断：粗心/思路卡壳/计算弱</li></ul></div>
+    <div class="io-box io-out"><span class="lab">📤 输出诊断报告</span><ul><li>知识漏洞清单（按严重度排）</li><li>失分模块饼图</li><li>提分方向 + 路径建议</li><li>建议切入的大纲讲次</li><li>自动写入学生档案</li></ul></div>
+  </div>
+  <div class="quote">举例输出：<b>「张同学·初二·精进」本次月考 98 分。致命漏洞：含参不等式组（-6）、一次函数综合（-8）；薄弱：分式方程应用。建议：先用2讲补含参不等式组的边界问题，再衔接一次函数综合。学习习惯：几何证明思路易卡壳，需强化模型识别。</b></div>
+</div>
+
+<div class="mod m-orange">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--orange)">📐</div>
+    <h3>③ 专属大纲生成器</h3><span class="pill p-P0">P0</span>
+  </div>
+  <p>这是你明确要的核心能力。<b>三步生成专属大纲</b>：选年段+学期+层次 → 加载对应机构大纲底库 → 叠加该学生的学情诊断，AI 自动调整顺序、增删知识点、标注重点，生成可编辑的专属大纲。</p>
+  <div class="io-grid">
+    <div class="io-box io-in"><span class="lab">📥 选择条件</span><ul><li>年级：初一/初二/初三</li><li>学期：寒春/暑秋</li><li>层次：好学/精进/志高/壮志</li><li>家长期望：查漏优先 or 同步优先</li><li>该学生最新学情诊断</li></ul></div>
+    <div class="io-box io-proc"><span class="lab">🧠 AI 裁剪逻辑</span><ul><li>查漏优先：把致命漏洞讲次提到前面</li><li>同步优先：保留校内进度顺序</li><li>已熟练知识点标记「快速过」</li><li>薄弱点插入巩固讲次</li><li>志高生自动接入壮志拔高模块</li><li>保留★重点与难度星级</li></ul></div>
+    <div class="io-box io-out"><span class="lab">📤 专属大纲</span><ul><li>可编辑表格（讲次/内容/难度/备注）</li><li>每讲标注「为什么这样排」</li><li>一键导出/打印</li><li>存入档案，后续可迭代</li><li>与备课助手联动</li></ul></div>
+  </div>
+  <div class="note"><b>底库已就绪：</b>你的两份附件已结构化——FY26寒春（初一~初三 × 好学/精进，含★重点）、FY27暑秋（含志高+壮志拔高）。生成器会按你选的条件自动加载对应 sheet 作为底版。</div>
+</div>
+
+<div class="mod m-green">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--green)">✍️</div>
+    <h3>④ 家长沟通话术库</h3><span class="pill p-P0">P0</span>
+  </div>
+  <p>覆盖你三大沟通场景，输入学生情况即出话术，复制就能发。<b>语气和 emoji 风格全部对齐你给的那条范例</b>（带[玫瑰]、温和鼓励+具体问题+后续规划）。</p>
+  <table style="margin-top:10px">
+    <thead><tr><th>场景</th><th>触发</th><th>AI 产出</th></tr></thead>
+    <tbody>
+      <tr><td>A. 课后学情反馈</td><td>选学生+填本节课表现要点</td><td>对齐你范例风格的话术（表现肯定+具体问题+后续规划+附件提示）</td></tr>
+      <tr><td>B. 家长提问应答</td><td>家长发来问题（如「为什么没提分」「能不能加课」）</td><td>给出2-3版回复思路+话术，含事实依据+情绪安抚+行动方案</td></tr>
+      <tr><td>C. 阶段规划沟通</td><td>阶段结束/续班节点</td><td>阶段总结话术+下阶段规划+期望管理</td></tr>
+    </tbody>
+  </table>
+  <div class="quote"><b>场景B 示例</b>（家长问「孩子上了这么久怎么没提分」）：<br>AI 应答思路：①先共情不回避 → ②摆数据（历次成绩曲线/知识掌握变化，证明其实在进步只是还没到爆发点）→ ③解释数学提分规律（几何/函数综合有滞后期）→ ④给明确时间预期和下阶段动作。话术直接可复制，并附上从档案调出的成绩对比图说明。</div>
+</div>
+
+<!-- P1 P2 模块 -->
+<h3 class="sub">P1 / P2 模块</h3>
+
+<div class="mod m-amber">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--amber)">📚</div>
+    <h3>⑤ 课前备课助手</h3><span class="pill p-P1">P1</span>
+  </div>
+  <p>在专属大纲里选中本次要上的讲次 → AI 一键生成<b>四件套备课材料</b>：教案框架、出入门测（前测查基础+门测查本节）、课堂练习（分层）、课后作业（按难度星级匹配层次）。</p>
+  <p>生成逻辑：讲次知识点 → 调题库/生成题目 → 套入「出入门测+练习+作业」模板 → 标注难度与对应大纲分值。你只需微调即可打印上课。</p>
+</div>
+
+<div class="mod m-amber">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--amber)">⏰</div>
+    <h3>⑥ 课表与智能提醒</h3><span class="pill p-P1">P1</span>
+  </div>
+  <p>解决你「提前1天上课提醒 + 提前10分钟到岗」的硬需求。课表导入后，自动按规则推送：提前1天提醒你+发家长上课通知；开课前10分钟弹「到岗准备清单」（教材/电脑/平板/教案/出入测打印）。</p>
+</div>
+
+<div class="mod" style="border-left-color:#0891b2">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:#0891b2">📈</div>
+    <h3>⑦ 成绩进步看板</h3><span class="pill p-P2">P2</span>
+  </div>
+  <p>每个学生一张图：历次考试分数曲线 + 知识模块掌握度雷达图（代数/几何/函数/统计…）+ 提分进度条。续班沟通时直接调图，比文字更有说服力。</p>
+</div>
+
+<div class="mod m-pink">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:var(--pink)">🗒️</div>
+    <h3>⑧ 题库与错题本</h3><span class="pill p-P2">P2</span>
+  </div>
+  <p>按知识点+难度+题型归集题目，学生错题自动归档到他的档案下。备课出题时按「知识点+漏洞」一搜即得，越积累出题越快、越精准。</p>
+</div>
+
+<div class="mod" style="border-left-color:#dc2626">
+  <div class="mod-head">
+    <div class="ic-lg" style="background:#dc2626">🔔</div>
+    <h3>⑨ 续班满意度预警</h3><span class="pill p-P2">P2</span>
+  </div>
+  <p>当出现「连续2次成绩停滞」「家长近期提问变多/语气焦虑」「作业完成率下降」等信号时自动预警，提示你主动沟通，把续班风险前置处理。</p>
+</div>
+
+<!-- 4. 信息架构 -->
+<h2 class="sec" id="s4"><span class="n">4</span>信息架构（导航结构）</h2>
+<p class="lead">以「学生」为主线索组织，所有功能都能从学生档案进入——符合你「记得每个学生」的核心诉求。</p>
+<div class="tree">
+数学私教 AI 工作台
+├─ 🏠 <b>今日工作台</b>（开屏首页：今日课表 + 待备课清单 + 待反馈学生 + 预警提醒）
+├─ 🗂️ <b>学生档案中心</b>
+│   ├─ 学生列表（卡片视图，按年级/层次筛选）
+│   └─ 学生详情页（点击进入，含以下 Tab）
+│       ├─ 画像总览（基本信息 + 画像摘要 + 成绩曲线 + 掌握度雷达）
+│       ├─ 学情诊断（历次诊断报告时间轴）
+│       ├─ <i>专属大纲</i>（当前版 + 历史版 + 一键再生成）
+│       ├─ 备课记录（每节课教案/出入测/作业）
+│       ├─ 课堂表现（每节课表现速记）
+│       ├─ 家长沟通（话术记录 + 提问应答历史）
+│       └─ 错题本（该学生专属错题归档）
+├─ 🔬 <b>学情诊断</b>（独立入口：上传试卷 → 出报告 → 自动归档到学生）
+├─ 📐 <b>大纲生成器</b>（选条件 → 加载底库 → 叠加学情 → 生成专属大纲）
+├─ ✍️ <b>话术中心</b>（课后反馈 / 提问应答 / 阶段规划 三入口）
+├─ 📚 <b>备课助手</b>（选学生+课次 → 出四件套材料）
+├─ 🗓️ <b>课表提醒</b>（日历视图 + 提醒规则）
+├─ 📊 <b>看板</b>（全部学生成绩概览 + 预警列表）
+├─ 📒 <b>题库</b>（按知识点/难度/题型检索）
+└─ ⚙️ <b>设置</b>（大纲底库管理 / 提醒规则 / 话术模板 / 学生标签）
+</div>
+
+<!-- 5. 首课全流程示例 -->
+<h2 class="sec" id="s5"><span class="n">5</span>一个完整闭环：首课全流程串联</h2>
+<p class="lead">以「新接手一个初二学生」为例，看工作台如何把你现在的首课六步串成一条流水线。</p>
+<table>
+  <thead><tr><th>你现在的步骤</th><th>工作台动作</th><th>产出物</th></tr></thead>
+  <tbody>
+    <tr><td>1. 了解家长期望</td><td>新建学生档案，勾选「查漏优先/同步优先」+录入期望分</td><td>档案雏形 + 期望标签</td></tr>
+    <tr><td>2. 结合试卷做学情诊断</td><td>上传试卷到「学情诊断」→ AI 出漏洞清单+提分方向</td><td>诊断报告（自动入档）</td></tr>
+    <tr><td>3. 制定初步课程大纲</td><td>进「大纲生成器」：初二+寒春+精进+查漏优先 → 叠加诊断 → 生成专属大纲</td><td>可编辑专属大纲草稿</td></tr>
+    <tr><td>4. 行课</td><td>大纲选第1讲 → 「备课助手」出教案/出入测/作业 → 上课</td><td>备课材料包 + 课堂表现速记</td></tr>
+    <tr><td>5. 定阶段目标+改大纲</td><td>首课后在档案记表现 → 标注调整点 → 一键再生成大纲</td><td>阶段目标 + 大纲V2</td></tr>
+    <tr><td>6. 向家长反馈首课+规划</td><td>进「话术中心·阶段规划」→ AI 出首课反馈话术（对齐你的风格）</td><td>可复制话术 + 规划说明</td></tr>
+  </tbody>
+</table>
+<div class="note"><b>关键闭环：</b>第6步的反馈话术里引用的数据（诊断漏洞、提分方向、阶段目标）全部来自前5步的自动沉淀——你不需重复输入，话术自带依据，家长觉得专业又具体。</div>
+
+<!-- 6. 自动化规则 -->
+<h2 class="sec" id="s6"><span class="n">6</span>自动化规则</h2>
+<p class="lead">把你现在靠脑子记、靠手发的重复动作，变成自动跑的规则（触发 → 条件 → 动作 → 通知）。</p>
+<table class="auto-table">
+  <thead><tr><th>规则</th><th>触发</th><th>条件</th><th>动作</th><th>通知</th></tr></thead>
+  <tbody>
+    <tr><td>R1 上课前一天提醒</td><td>每日定时 20:00</td><td>次日有课</td><td>生成明日课表+备课清单+该学生上次表现摘要</td><td>推送给你的手机</td></tr>
+    <tr><td>R2 家长上课通知</td><td>每日定时 19:00</td><td>次日有课</td><td>生成上课提醒话术（@家长+时间+主题）</td><td>话术待你确认后发沟通群</td></tr>
+    <tr><td>R3 到岗准备清单</td><td>开课前10分钟</td><td>当日有课</td><td>弹出准备清单（教材/电脑/平板/教案/出入测打印件）</td><td>弹窗/震动提醒</td></tr>
+    <tr><td>R4 课后反馈待办</td><td>课程结束时间到</td><td>当日有课上完</td><td>在「今日工作台」置顶「待反馈：XX同学」+预填表现模板</td><td>待办标红</td></tr>
+    <tr><td>R5 诊断自动归档</td><td>学情诊断报告生成</td><td>已关联学生</td><td>报告自动写入该学生档案「学情诊断」Tab并更新画像</td><td>归档提示</td></tr>
+    <tr><td>R6 续班预警</td><td>每周一 09:00</td><td>某生连续2次成绩未涨 OR 家长提问频次突增</td><td>标记预警，列出该生近期数据+建议沟通话术</td><td>推送预警卡片</td></tr>
+    <tr><td>R7 大纲版本留存</td><td>专属大纲重新生成</td><td>已有旧版</td><td>旧版存入历史，新版置顶，并记录「改了什么+为什么」</td><td>版本对比可查</td></tr>
+  </tbody>
+</table>
+
+<!-- 7. 看板原型 -->
+<h2 class="sec" id="s7"><span class="n">7</span>工作台界面原型草图</h2>
+<p class="lead">下面用静态草图模拟工作台打开后的样子——「今日工作台」首页 + 学生详情页。</p>
+
+<div class="proto">
+  <div class="proto-bar">
+    <span class="dot" style="background:#ef4444"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#22c55e"></span>
+    <span class="url">数学私教 AI 工作台 · 今日工作台</span>
+  </div>
+  <div class="proto-body">
+    <div class="proto-side">
+      <div class="proto-nav">
+        <div class="nt">主导航</div>
+        <div class="ni act">🏠 今日工作台</div>
+        <div class="ni">🗂️ 学生档案</div>
+        <div class="ni">🔬 学情诊断</div>
+        <div class="ni">📐 大纲生成</div>
+        <div class="ni">✍️ 话术中心</div>
+        <div class="ni">📚 备课助手</div>
+        <div class="ni">🗓️ 课表提醒</div>
+        <div class="ni">📊 看板</div>
+        <div class="ni">📒 题库</div>
+        <div class="ni">⚙️ 设置</div>
+      </div>
+      <div class="proto-main">
+        <div class="proto-cards">
+          <div class="pc"><div class="l">今日课时</div><div class="v">4</div><div class="l" style="color:var(--ink3)">下午2点开始</div></div>
+          <div class="pc"><div class="l">待备课</div><div class="v warn">2</div><div class="l" style="color:var(--ink3)">张同学·含参不等式</div></div>
+          <div class="pc"><div class="l">待反馈</div><div class="v warn">1</div><div class="l" style="color:var(--ink3)">李同学·昨日课</div></div>
+          <div class="pc"><div class="l">续班预警</div><div class="v warn">1</div><div class="l" style="color:var(--ink3)">王同学·连续2次停滞</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:12px">
+          <div class="proto-panel">
+            <div class="pt">🗓️ 今日课表</div>
+            <div class="stu-row"><div class="avatar" style="background:var(--blue)">张</div><div><div class="nm">张同学 · 初二精进</div><div class="info">14:00-16:00 · 含参不等式组（边界问题）</div></div></div>
+            <div class="stu-row"><div class="avatar" style="background:var(--teal)">李</div><div><div class="nm">李同学 · 初三志高</div><div class="info">16:30-18:30 · 二次函数综合（压轴）</div></div></div>
+            <div class="stu-row"><div class="avatar" style="background:var(--orange)">王</div><div><div class="nm">王同学 · 初一好学</div><div class="info">19:00-21:00 · 一元一次方程应用</div></div></div>
+            <div class="stu-row"><div class="avatar" style="background:var(--purple)">赵</div><div><div class="nm">赵同学 · 初二精进</div><div class="info">21:10-23:10 · 反比例函数k的几何意义</div></div></div>
+          </div>
+          <div class="proto-panel">
+            <div class="pt">⚡ 待办与预警</div>
+            <div style="font-size:12px">
+              <div style="padding:6px 0;border-bottom:1px solid var(--line)"><b style="color:var(--orange)">待备课</b> · 张同学·含参不等式　<a style="color:var(--blue);cursor:pointer">一键生成教案→</a></div>
+              <div style="padding:6px 0;border-bottom:1px solid var(--line)"><b style="color:var(--orange)">待反馈</b> · 李同学·二次函数压轴　<a style="color:var(--blue);cursor:pointer">生成话术→</a></div>
+              <div style="padding:6px 0;border-bottom:1px solid var(--line)"><b style="color:#dc2626">续班预警</b> · 王同学连续2次停滞　<a style="color:var(--blue);cursor:pointer">查看数据+应答话术→</a></div>
+              <div style="padding:6px 0"><b style="color:var(--amber)">到岗提醒</b> · 13:50 弹出准备清单</div>
+            </div>
+          </div>
+        </div>
+        <div class="proto-panel">
+          <div class="pt">📈 我的学生本周速览</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px">
+            <div><b>张同学</b> 初二精进<br><span style="color:var(--ink3)">最新 98→102</span><div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--green)"></div></div></div>
+            <div><b>李同学</b> 初三志高<br><span style="color:var(--ink3)">最新 135→138</span><div class="bar-track"><div class="bar-fill" style="width:92%;background:var(--blue)"></div></div></div>
+            <div><b>王同学</b> 初一好学<br><span style="color:var(--ink3)">最新 88→87</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--orange)"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:18px" class="lead">点开任一学生进入详情页（Tab 切换）：</p>
+<div class="proto" style="margin-top:8px">
+  <div class="proto-bar"><span class="dot" style="background:#ef4444"></span><span class="dot" style="background:#f59e0b"></span><span class="dot" style="background:#22c55e"></span><span class="url">学生详情 · 张同学（初二·精进·查漏优先）</span></div>
+  <div class="proto-body">
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+      <span class="pill" style="background:var(--blue-bg);color:var(--blue)">画像总览</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">学情诊断(3)</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">专属大纲 V2</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">备课记录</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">课堂表现</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">家长沟通</span>
+      <span class="pill" style="background:#fff;border:1px solid var(--line);color:var(--ink2)">错题本(27)</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="proto-panel">
+        <div class="pt">📋 画像摘要（AI 自动生成）</div>
+        <div style="font-size:12.5px;line-height:1.8">初二精进班，目标冲刺重点高中。致命漏洞：<b>含参不等式组、一次函数综合</b>；习惯：几何证明思路易卡壳、审题粗心。已上12讲，当前进度：反比例函数二。家长配合度高，期望本学期提至115+。</div>
+      </div>
+      <div class="proto-panel">
+        <div class="pt">📈 成绩曲线（近6次）</div>
+        <div style="font-size:11px;color:var(--ink3);height:80px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--line);padding-bottom:4px">
+          <div style="flex:1;text-align:center"><div style="background:var(--blue);height:52px;border-radius:3px"></div>85</div>
+          <div style="flex:1;text-align:center"><div style="background:var(--blue);height:58px;border-radius:3px"></div>91</div>
+          <div style="flex:1;text-align:center"><div style="background:var(--orange);height:55px;border-radius:3px"></div>88</div>
+          <div style="flex:1;text-align:center"><div style="background:var(--blue);height:62px;border-radius:3px"></div>95</div>
+          <div style="flex:1;text-align:center"><div style="background:var(--blue);height:65px;border-radius:3px"></div>98</div>
+          <div style="flex:1;text-align:center"><div style="background:var(--green);height:70px;border-radius:3px"></div>102</div>
+        </div>
+        <div style="font-size:11px;color:var(--green);margin-top:6px">↑ 较首次 +17 分　|　趋势：稳步上升</div>
+      </div>
+    </div>
+    <div class="proto-chat" style="margin-top:12px">
+      <div class="pt" style="font-size:13px;font-weight:700;margin-bottom:8px">✍️ 上次课后反馈话术（一键复用风格）</div>
+      <div class="msg">@家长，以上是孩子今天课程的学情反馈和部分课堂笔记[玫瑰]孩子还是一如既往表现比较好，但发现孩子审题时容易粗心，涉及复杂几何证明时思路容易卡壳。后续为更好提升几何综合能力，会开始讲初三的三角函数和圆的知识[玫瑰][玫瑰]</div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. 大纲分层适配 -->
+<h2 class="sec" id="s8"><span class="n">8</span>机构大纲分层适配</h2>
+<p class="lead">你的两份附件已结构化为大纲底库，生成器按层次自动加载对应底版——这套分层就是「专属大纲」的切换开关。</p>
+<div class="layer-grid">
+  <div class="layer l-hao"><div class="ln">好学</div><div class="ls">≤110 分</div><div class="ld">基础巩固为主，重计算与概念，★为必掌握</div></div>
+  <div class="layer l-jin"><div class="ln">精进</div><div class="ls">110–130 分</div><div class="ld">中等+综合题型，引入模型与进阶方法</div></div>
+  <div class="layer l-zhi"><div class="ln">志高</div><div class="ls">≈140 分</div><div class="ld">拔高与压轴，含绝对值进阶/数轴专题</div></div>
+  <div class="layer l-zhuang"><div class="ln">壮志</div><div class="ls">竞赛/冲刺</div><div class="ld">梅涅劳斯/塞瓦/柯西不等式等高阶</div></div>
+</div>
+<table>
+  <thead><tr><th>底库</th><th>覆盖</th><th>字段结构</th><th>生成器用途</th></tr></thead>
+  <tbody>
+    <tr><td>FY26 寒春大纲</td><td>初一~初三 × 好学/精进（寒+春）</td><td>序号/大标题/小标题/题型/分值（★标重点）</td><td>寒假、春季学期排课底版</td></tr>
+    <tr><td>FY27 暑秋大纲</td><td>初一~初三 × 好学/精进/志高 + 壮志（暑+秋）</td><td>讲次/内容归属/大标题/具体内容（*标难）/难度星级/分值</td><td>暑假、秋季学期排课底版，含志高与壮志拔高</td></tr>
+  </tbody>
+</table>
+<div class="note"><b>个性化班型（如「初二个性化」「初三个性化」sheet）</b>：你说不用管，生成器默认不加载；如未来某个学生需要完全自定进度，可手动选用作为「空白底版」。</div>
+
+<!-- 9. 落地路线 -->
+<h2 class="sec" id="s9"><span class="n">9</span>落地里程碑</h2>
+<p class="lead">永远先跑通一个小闭环，再加模块——避免一次性大爆炸。分三阶段：</p>
+<div class="road">
+  <div class="road-card road-mvp">
+    <div class="rh">MVP（2 周内跑通）</div>
+    <div class="rt">先交付「记得住学生 + 出得了大纲 + 写得了话术」</div>
+    <ul>
+      <li>学生档案中心（基础字段+画像摘要）</li>
+      <li>学情诊断引擎（试卷上传→漏洞清单）</li>
+      <li>专属大纲生成器（加载FY26/FY27底库）</li>
+      <li>家长沟通话术库（课后反馈+提问应答）</li>
+      <li>大纲底库已结构化入库（你两份附件）</li>
+    </ul>
+    <div style="margin-top:10px;font-size:12px;opacity:.9">验收：新接一个学生，能从首课到反馈全流程走完，全程不翻聊天记录</div>
+  </div>
+  <div class="road-card road-p1">
+    <div class="rh">二期（第 3–4 周）</div>
+    <div class="rt">补齐「备课 + 提醒」，形成日常行课闭环</div>
+    <ul>
+      <li>课前备课助手（教案/出入测/练习/作业四件套）</li>
+      <li>课表导入 + 智能提醒（R1/R2/R3/R4）</li>
+      <li>课堂表现速记 + 自动归档</li>
+      <li>话术模板自定义（保存你的惯用表达）</li>
+      <li>大纲版本管理（R7 历史留存）</li>
+    </ul>
+    <div style="margin-top:10px;font-size:12px;opacity:.9">验收：一节课从备课到课后反馈，30分钟内完成</div>
+  </div>
+  <div class="road-card road-p2">
+    <div class="rh">长期演进（1–2 月+）</div>
+    <div class="rt">数据沉淀带来「越用越准」</div>
+    <ul>
+      <li>成绩进步看板（曲线+雷达）</li>
+      <li>题库与错题本（按知识点/难度归集）</li>
+      <li>续班满意度预警（R6）</li>
+      <li>跨学生知识薄弱统计（反哺备课选题）</li>
+      <li>可选：钉钉群消息自动同步（待确认API权限）</li>
+    </ul>
+    <div style="margin-top:10px;font-size:12px;opacity:.9">验收：续班季有数据有话术，主动沟通率提升</div>
+  </div>
+</div>
+
+<h4>MVP 验收清单</h4>
+<ul class="check">
+  <li>能新建学生档案并录入期望/层次/年级</li>
+  <li>上传一张试卷，10分钟内出结构化诊断报告（漏洞+提分方向）</li>
+  <li>选「初二+寒春+精进+查漏优先」能生成专属大纲草稿，且查漏讲次排在前面</li>
+  <li>输入课堂表现要点，能生成对齐你[玫瑰]风格的话术，复制即可发群</li>
+  <li>家长问「为什么没提分」，能给出含数据依据的应答话术</li>
+  <li>两份机构大纲底库已入库，可按层次切换</li>
+</ul>
+
+<!-- 10. 选型说明 -->
+<h2 class="sec" id="s10"><span class="n">10</span>选型与说明</h2>
+<table>
+  <thead><tr><th>能力</th><th>推荐方案</th><th>备选</th><th>理由 / 风险</th></tr></thead>
+  <tbody>
+    <tr><td>工作台载体</td><td>WorkBuddy 工作台 + 知识库（资料库）</td><td>Notion / 飞书多维表</td><td>推荐：自包含、低代码、AI 原生、可迁移；备选锁定风险略高</td></tr>
+    <tr><td>学生档案存储</td><td>资料库（每生一篇文档/一条记录）</td><td>本地 Excel 汇总表</td><td>资料库支持 AI 检索与跨学生统计；Excel 适合兜底</td></tr>
+    <tr><td>试卷 OCR</td><td>拍照→AI 多模态识别</td><td>手动填失分表</td><td>OCR 快但偶有误识别，生成后让你校验；手填最稳作兜底</td></tr>
+    <tr><td>大纲底库</td><td>FY26/FY27 已结构化入库</td><td>—</td><td>你提供的附件已可直接作为底版，无需额外采购</td></tr>
+    <tr><td>课表提醒</td><td>工作台日历+定时推送</td><td>手机系统日历</td><td>工作台内闭环更连贯；系统日历需手动同步</td></tr>
+    <tr><td>钉钉群集成</td><td>导出/粘贴消息（MVP）</td><td>钉钉开放API（长期）</td><td>API 需企业权限，标注<b>待确认</b>；先用粘贴兜底，不影响核心闭环</td></tr>
+  </tbody>
+</table>
+
+<div class="note"><b>关于「真正搭建」：</b>本蓝图目前是<b>设计方案</b>。若你要把它真正搭成可用的 WorkBuddy 工作台（建知识库结构、配置自动化规则、导入大纲底库、写话术模板），需要确认：① 你的 WorkBuddy 账号/团队空间权限；② 钉钉群是否可导出或接 API；③ 是否接受试卷走云端 AI 识别（涉及学生隐私脱敏）。确认后我可按 MVP 清单逐项落地。</div>
+
+<div class="quote">一句话总结：这个工作台 = <b>学生档案（记性）+ 学情诊断（眼力）+ 专属大纲（脑力）+ 话术生成（嘴力）+ 自动化（手力）</b>。前四个是 P0，先把「记得住、看得准、排得对、说得好」跑通，你每天省下的就是最耗神的那几个小时。</div>
+
+<div class="foot">
+  数学私教 AI 工作台 · 蓝图 v1　|　基于你的三大工作模块与 FY26寒春 / FY27暑秋 大纲定制<br>
+  设计原则：自包含 · 低代码 · 先 MVP 后演进 · 不臆造数据
+</div>
+
+</div>
+</body>
+</html>
